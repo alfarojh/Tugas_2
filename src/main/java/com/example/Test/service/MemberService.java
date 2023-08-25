@@ -122,10 +122,8 @@ public class MemberService {
      * @return true jika pembaruan berhasil, false jika tidak.
      */
     public boolean updateMemberById(int id, String name, String address, String phoneNumber) {
-        if (getIndexByID(id) < 0) {
-            statusMessage = "Update failed. The ID `" + id + "` does not exist.";
-        }
-        else if(isNameValid(name) &&
+        if(getIndexByID(id) >= 0 &&
+                isNameValid(name) &&
                 isAddressValid(address) &&
                 isPhoneNumberValid(phoneNumber)) {
             members.get(getIndexByID(id)).setName(name);
@@ -147,10 +145,8 @@ public class MemberService {
      * @return true jika penghapusan berhasil, false jika tidak.
      */
     public boolean removeMemberById(int id) {
-        if (getIndexByID(id) < 0) {
-            statusMessage = "Delete failed. The ID `" + id + "` does not exist.";
-            return false;
-        } else {
+        if (getIndexByID(id) < 0) return false;
+        else {
             members.get(getIndexByID(id)).delete();
             statusMessage = "Member with ID `" + id + "` deleted successfully.";
             return true;
@@ -172,7 +168,7 @@ public class MemberService {
         if (address == null) {
             statusMessage = "The value of `address` cannot be null!";
             return false;
-        } else if (address.trim().equals("")) {
+        } else if (address.trim().isEmpty()) {
             statusMessage = "The value of `address` cannot be empty!";
             return false;
         } else return true;
@@ -191,7 +187,7 @@ public class MemberService {
         if (name == null) {
             statusMessage = "The value of `name` cannot be null!";
             return false;
-        } else if (name.trim().equals("")) {
+        } else if (name.trim().isEmpty()) {
             statusMessage = "The value of `name` cannot be empty!";
             return false;
         } else if (!name.matches("[a-zA-Z0-9\\s]+")) {
@@ -215,7 +211,7 @@ public class MemberService {
         if (phoneNumber == null) {
             statusMessage = "The value of `phoneNumber` cannot be null!";
             return false;
-        } else if (phoneNumber.trim().equals("")) {
+        } else if (phoneNumber.trim().isEmpty()) {
             statusMessage = "The value of `phoneNumber` cannot be empty!";
             return false;
         } else if (!phoneNumber.matches("\\d+")) {
@@ -227,7 +223,15 @@ public class MemberService {
         } else return true;
     }
 
-
+    /**
+     * Fungsi untuk mendapatkan indeks anggota berdasarkan ID.
+     * Menerima parameter ID anggota yang akan dicari.
+     * Mengembalikan indeks anggota jika ditemukan dan status anggota aktif,
+     * atau -1 jika tidak ditemukan atau tidak aktif.
+     *
+     * @param id ID anggota yang akan dicari.
+     * @return Indeks anggota jika ditemukan dan aktif, atau -1 jika tidak ditemukan atau tidak aktif.
+     */
     public int getIndexByID(int id) {
         if (id > 0 && id <= members.size()) {
             if (members.get(id - 1).isExist()) {

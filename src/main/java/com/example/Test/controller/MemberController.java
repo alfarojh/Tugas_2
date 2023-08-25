@@ -47,7 +47,8 @@ public class MemberController {
                             memberService.getMemberById(id)
             ));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(memberService.getStatusMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(memberService.getStatusMessage()));
         }
     }
 
@@ -70,7 +71,8 @@ public class MemberController {
                             memberService.getMemberById(memberService.getMemberSize())
                     ));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberService.getStatusMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(memberService.getStatusMessage()));
         }
     }
 
@@ -89,9 +91,14 @@ public class MemberController {
     @PutMapping("/{id}")
     public ResponseEntity updateMember(@PathVariable int id, @RequestBody Member member) {
         if (memberService.updateMemberById(id, member.getName(), member.getAddress(), member.getPhoneNumber())) {
-            return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberById(id));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(
+                            memberService.getStatusMessage(),
+                            memberService.getMemberById(id)
+                    ));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberService.getStatusMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(memberService.getStatusMessage()));
         }
     }
 
@@ -108,9 +115,11 @@ public class MemberController {
     @DeleteMapping("/{id}")
     public ResponseEntity removeMember(@PathVariable int id) {
         if (memberService.removeMemberById(id)) {
-            return ResponseEntity.status(HttpStatus.OK).body(memberService.getStatusMessage());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(memberService.getStatusMessage()));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(memberService.getStatusMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(memberService.getStatusMessage()));
         }
     }
 }
